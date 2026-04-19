@@ -155,7 +155,7 @@ Config file: `~/.config/opshero/config.json`
 
 ```json
 {
-  "api_url": "https://api.opshero.dev",
+  "api_url": "https://api.opshero.me",
   "cache_enabled": true,
   "offline_mode": false
 }
