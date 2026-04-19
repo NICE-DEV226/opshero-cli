@@ -1,0 +1,64 @@
+[project]
+name = "opshero"
+version = "0.1.6"
+description = "OpsHero CLI — Analyze CI/CD pipeline errors from your terminal"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "OpsHero Team", email = "opshero.dev@gmail.com" }
+]
+keywords = ["ci", "cd", "devops", "pipeline", "error", "analysis", "debugging"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: System :: Systems Administration",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "click>=8.1.0",
+    "httpx>=0.27.0",
+    "rich>=13.7.0",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.3.0",
+    "python-jose[cryptography]>=3.3.0",
+    "platformdirs>=4.2.0",
+    "aiofiles>=23.2.0",
+    "anyio>=4.4.0",
+]
+
+[project.urls]
+Homepage = "https://opshero.me"
+Documentation = "https://opshero.me/dashboard/docs/cli"
+Repository = "https://github.com/NICE-DEV226/opshero-backend"
+Issues = "https://github.com/NICE-DEV226/opshero-backend/issues"
+Source = "https://github.com/NICE-DEV226/opshero-backend/tree/main/cli"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.0",
+    "pytest-httpx>=0.30.0",
+    "ruff>=0.4.0",
+]
+
+[project.scripts]
+opshero = "opshero.main:cli"
+
+[build-system]
+requires = ["hatchling>=1.21.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["opshero"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
