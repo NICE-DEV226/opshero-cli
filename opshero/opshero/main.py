@@ -135,10 +135,11 @@ SECTIONS = [
     ),
     (
         "dim", "▸  CONFIG",
-        ["config show", "config set api-url"],
+        ["config show", "config set api-url", "update"],
         [
             "Print current CLI settings",
             "Change the backend API URL",
+            "Update CLI to the latest version",
         ],
     ),
     (
@@ -305,6 +306,49 @@ def config_set(key: str, value: str):
         cfg.api_url = value
         cfg.save()
         console.print(f"  [dim]api-url[/dim] [dim]→[/dim] [{_C}]{value}[/{_C}]")
+
+
+@cli.command("update")
+def update_cmd():
+    """Update the OpsHero CLI to the latest version."""
+    import subprocess
+    import sys
+
+    console.print(f"\n  [dim]Current version:[/dim] [{_C}]v{__version__}[/{_C}]")
+    console.print(f"  [dim]Checking PyPI for latest version…[/dim]\n")
+
+    try:
+        result = subprocess.run(
+            [sys.executable, "-m", "pip", "install", "--upgrade", "opshero"],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode == 0:
+            # Check if actually upgraded
+            if "Successfully installed" in result.stdout:
+                # Extract new version
+                import re
+                match = re.search(r"opshero-(\S+)", result.stdout)
+                new_ver = match.group(1) if match else "latest"
+                console.print(
+                    f"  [{_A}]✓[/{_A}] Updated to  [bold {_A}]v{new_ver}[/bold {_A}]\n"
+                    f"  [dim]Restart your terminal for changes to take effect.[/dim]\n"
+                )
+            else:
+                console.print(
+                    f"  [{_A}]✓[/{_A}] Already up to date  [dim](v{__version__})[/dim]\n"
+                )
+        else:
+            console.print(
+                f"  [{_D}]Update failed.[/{_D}]\n"
+                f"  [dim]Try manually: [bold]pip install --upgrade opshero[/bold][/dim]\n"
+                f"  [dim]{result.stderr[:200]}[/dim]\n"
+            )
+    except Exception as e:
+        console.print(
+            f"  [{_D}]Error:[/{_D}] {e}\n"
+            f"  [dim]Try manually: [bold]pip install --upgrade opshero[/bold][/dim]\n"
+        )
 
 
 # ── Entry point ─────────────────────────────────────────────────────────────────

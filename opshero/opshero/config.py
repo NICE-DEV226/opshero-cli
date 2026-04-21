@@ -35,19 +35,34 @@ PATTERNS_CACHE_FILE = DATA_DIR / "patterns_cache.json"
 ANALYSES_DB_FILE = DATA_DIR / "analyses.db"
 
 
+# ── Canonical backend URL — never changes unless explicitly overridden ──────────
+CANONICAL_API_URL = "https://api.opshero.me"
+
+# Legacy URLs that should be auto-migrated to the canonical URL
+_LEGACY_URLS = {
+    "https://opshero-backend-production.up.railway.app",
+    "https://opshero-backend.onrender.com",
+    "http://localhost:8000",
+    "https://opshero.them4trix.org",  # temporary VPS URL
+}
+
+
 # ── Config model ───────────────────────────────────────────────────────────────
 
 class Config(BaseModel):
-    # API (can be overridden via OPSHERO_API_URL environment variable)
-    api_url: str = "https://api.opshero.me"
-    
+    # API URL — always reset to canonical unless env var is set
+    api_url: str = CANONICAL_API_URL
+
     def __init__(self, **data):
         super().__init__(**data)
-        # Allow environment variable override
         import os
         env_url = os.getenv("OPSHERO_API_URL")
         if env_url:
+            # Explicit env var always wins
             self.api_url = env_url.rstrip("/")
+        elif self.api_url in _LEGACY_URLS or not self.api_url:
+            # Auto-migrate legacy URLs to canonical
+            self.api_url = CANONICAL_API_URL
 
     # Auth
     access_token: Optional[str] = None

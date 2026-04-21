@@ -1,6 +1,6 @@
 [project]
 name = "opshero"
-version = "0.1.7"
+version = "0.1.9"
 description = "OpsHero CLI — Analyze CI/CD pipeline errors from your terminal"
 readme = "README.md"
 requires-python = ">=3.11"
