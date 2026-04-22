@@ -107,6 +107,8 @@ def push_cmd(dry_run: bool):
     if not cfg.is_authenticated:
         console.print("[yellow]Not logged in — run [bold cyan]opshero login[/bold cyan][/yellow]")
         raise SystemExit(1)
+    from opshero.tier import require_feature
+    require_feature(cfg.user_tier, "sync_enabled")
     asyncio.run(_push(cfg, dry_run))
 
 
@@ -180,6 +182,8 @@ def pull_cmd(since: str | None):
     if not cfg.is_authenticated:
         console.print("[yellow]Not logged in — run [bold cyan]opshero login[/bold cyan][/yellow]")
         raise SystemExit(1)
+    from opshero.tier import require_feature
+    require_feature(cfg.user_tier, "sync_enabled")
     asyncio.run(_pull(cfg, since))
 
 

@@ -193,7 +193,7 @@ async def _whoami(cfg: Config) -> None:
     console.print()
 
     tbl = Table(show_header=False, box=None, padding=(0, 2, 0, 2), expand=False)
-    tbl.add_column("key", style="dim", width=12)
+    tbl.add_column("key", style="dim", width=14)
     tbl.add_column("val")
 
     tbl.add_row("Login",     f"[bold {_C}]@{login}[/bold {_C}]")
@@ -203,4 +203,25 @@ async def _whoami(cfg: Config) -> None:
     tbl.add_row("Client ID", f"[dim]{cfg.client_id[:8]}…[/dim]")
 
     console.print(tbl)
+
+    # Show tier features
+    from opshero.tier import get_tier_features
+    features = get_tier_features(tier)
+    limit = features["analyses_per_day"]
+    limit_str = "Unlimited" if limit == -1 else str(limit)
+    history = features["history_days"]
+    history_str = "Unlimited" if history == -1 else f"{history} days"
+
+    console.print()
+    feat_tbl = Table(show_header=False, box=None, padding=(0, 2, 0, 2), expand=False)
+    feat_tbl.add_column("feature", style="dim", width=20)
+    feat_tbl.add_column("value")
+
+    feat_tbl.add_row("Analyses/day",  f"[{_A}]{limit_str}[/{_A}]")
+    feat_tbl.add_row("History",       f"[{_C}]{history_str}[/{_C}]")
+    feat_tbl.add_row("AI engine",     f"[{_A}]✓[/{_A}]" if features["llm_enabled"]  else f"[dim]✗  (Pro+)[/dim]")
+    feat_tbl.add_row("Cloud sync",    f"[{_A}]✓[/{_A}]" if features["sync_enabled"] else f"[dim]✗  (Pro+)[/dim]")
+    feat_tbl.add_row("Team projects", f"[{_A}]✓[/{_A}]" if features["team_enabled"] else f"[dim]✗  (Team)[/dim]")
+
+    console.print(feat_tbl)
     console.print()

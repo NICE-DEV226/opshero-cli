@@ -109,11 +109,8 @@ async def _team_overview() -> None:
         raise SystemExit(1)
 
     if cfg.user_tier not in ("team", "enterprise"):
-        console.print(
-            f"\n  [{_B}]Team features require a Team plan.[/{_B}]\n"
-            f"  Upgrade at [{_C}]https://opshero.me/dashboard/upgrade[/{_C}]\n"
-        )
-        raise SystemExit(0)
+        from opshero.tier import require_feature
+        require_feature(cfg.user_tier, "team_enabled")
 
     async with OpsHeroClient(cfg) as client:
         with console.status(f"[{_C}]Loading team…[/{_C}]"):
